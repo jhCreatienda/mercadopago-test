@@ -147,6 +147,7 @@ class MercadoPagoTestController extends Controller
             $request->validate([
                 'customer_id' => 'required|string',
                 'card_id' => 'required|string',
+                'token' => 'required|string',
                 'amount' => 'required|numeric',
                 'description' => 'nullable|string'
             ]);
@@ -154,15 +155,17 @@ class MercadoPagoTestController extends Controller
 
             $client = new PaymentClient();
 
-            $payment = $client->create([
+            $data = [
                 "transaction_amount" => (float) $request->amount,
-                "card_id" => $request->card_id,  // ID de la tarjeta guardada
+                "token" => $request->token,
                 "description" => $request->description ?? "Pago de suscripción",
                 "installments" => 1,
                 "payer" => [
                     "id" => $request->customer_id,
                 ],
-            ]);
+            ];
+
+            $payment = $client->create($data);
 
             \Log::info('Payment processed:', [
                 'payment_id' => $payment->id,

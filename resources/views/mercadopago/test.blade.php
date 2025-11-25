@@ -488,6 +488,7 @@
                         onSubmit: async (cardFormData) => {
                             return new Promise((resolve, reject) => {
                                 cardToken = cardFormData.token;
+                                console.log(cardFormData);
                                 log(`🎫 Token de tarjeta obtenido: ${cardToken}`, 'success');
                                 resolve();
                             });
@@ -579,6 +580,14 @@
                 log(`💵 Monto: $${amount}`, 'info');
                 log(`📝 Descripción: ${description}`, 'info');
 
+
+                console.log({
+                        customer_id: customerId,
+                        card_id: savedCardId,
+                        token: cardToken,
+                        amount: amount,
+                        description: description
+                    })
                 const response = await fetch('/mercadopago/process-payment', {
                     method: 'POST',
                     headers: {
@@ -588,6 +597,7 @@
                     body: JSON.stringify({
                         customer_id: customerId,
                         card_id: savedCardId,
+                        token: cardToken,
                         amount: amount,
                         description: description
                     })
