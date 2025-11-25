@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\Client\Customer\CustomerClient;
-use MercadoPago\Client\CustomerCard\CustomerCardClient;
+use MercadoPago\Client\Customer\CustomerCardClient;
 use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\MercadoPagoConfig;
 
@@ -71,7 +71,6 @@ class MercadoPagoTestController extends Controller
                 'customer_id' => $customer->id,
                 'email' => $customer->email
             ]);
-
         } catch (\Exception $e) {
             $errors = [
                 'success' => false,
@@ -83,7 +82,7 @@ class MercadoPagoTestController extends Controller
                     'code' => $e->getCode(),
                     'trace' => explode("\n", $e->getTraceAsString())
                 ]
-                ];
+            ];
             \Log::error('Create Customer Error: ' . $e->getMessage());
             \Log::error($errors);
             return response()->json($errors, 500);
@@ -100,9 +99,8 @@ class MercadoPagoTestController extends Controller
                 'customer_id' => 'required|string',
                 'token' => 'required|string'
             ]);
-            logger(1);
+
             $client = new CustomerCardClient();
-            logger(2);
 
             $card = $client->create($request->customer_id, [
                 "token" => $request->token
@@ -122,7 +120,6 @@ class MercadoPagoTestController extends Controller
                 'expiration_month' => $card->expiration_month,
                 'expiration_year' => $card->expiration_year
             ]);
-
         } catch (\Exception $e) {
             $errors = [
                 'success' => false,
@@ -134,7 +131,7 @@ class MercadoPagoTestController extends Controller
                     'code' => $e->getCode(),
                     'trace' => explode("\n", $e->getTraceAsString())
                 ]
-                ];
+            ];
             \Log::error('Save card Error: ' . $e->getMessage());
             \Log::error($errors);
             return response()->json($errors, 500);
@@ -153,18 +150,18 @@ class MercadoPagoTestController extends Controller
                 'amount' => 'required|numeric',
                 'description' => 'nullable|string'
             ]);
+            logger($request->all());
 
             $client = new PaymentClient();
 
             $payment = $client->create([
                 "transaction_amount" => (float) $request->amount,
+                "card_id" => $request->card_id,  // ID de la tarjeta guardada
                 "description" => $request->description ?? "Pago de suscripción",
-                "payment_method_id" => "master", // Ajustar según la tarjeta
+                "installments" => 1,
                 "payer" => [
                     "id" => $request->customer_id,
-                    "type" => "customer"
                 ],
-                "token" => $request->card_id
             ]);
 
             \Log::info('Payment processed:', [
@@ -180,7 +177,6 @@ class MercadoPagoTestController extends Controller
                 'status_detail' => $payment->status_detail,
                 'amount' => $payment->transaction_amount
             ]);
-
         } catch (\Exception $e) {
             $errors = [
                 'success' => false,
@@ -192,7 +188,7 @@ class MercadoPagoTestController extends Controller
                     'code' => $e->getCode(),
                     'trace' => explode("\n", $e->getTraceAsString())
                 ]
-                ];
+            ];
             \Log::error('proccess payment Error: ' . $e->getMessage());
             \Log::error($errors);
             return response()->json($errors, 500);
@@ -210,7 +206,7 @@ class MercadoPagoTestController extends Controller
 
             return response()->json([
                 'success' => true,
-                'cards' => array_map(function($card) {
+                'cards' => array_map(function ($card) {
                     return [
                         'id' => $card->id,
                         'last_four_digits' => $card->last_four_digits,
@@ -220,7 +216,6 @@ class MercadoPagoTestController extends Controller
                     ];
                 }, iterator_to_array($cards))
             ]);
-
         } catch (\Exception $e) {
             $errors = [
                 'success' => false,
@@ -232,7 +227,7 @@ class MercadoPagoTestController extends Controller
                     'code' => $e->getCode(),
                     'trace' => explode("\n", $e->getTraceAsString())
                 ]
-                ];
+            ];
             \Log::error('Create Customer card Error: ' . $e->getMessage());
             \Log::error($errors);
             return response()->json($errors, 500);
@@ -276,7 +271,6 @@ class MercadoPagoTestController extends Controller
             }
 
             return response()->json(['status' => 'ok'], 200);
-
         } catch (\Exception $e) {
             $errors = [
                 'success' => false,
@@ -288,7 +282,7 @@ class MercadoPagoTestController extends Controller
                     'code' => $e->getCode(),
                     'trace' => explode("\n", $e->getTraceAsString())
                 ]
-                ];
+            ];
             \Log::error('webhook Error: ' . $e->getMessage());
             \Log::error($errors);
             return response()->json($errors, 500);
@@ -313,7 +307,6 @@ class MercadoPagoTestController extends Controller
                     'last_name' => $customer->last_name
                 ]
             ]);
-
         } catch (\Exception $e) {
             $errors = [
                 'success' => false,
@@ -325,7 +318,7 @@ class MercadoPagoTestController extends Controller
                     'code' => $e->getCode(),
                     'trace' => explode("\n", $e->getTraceAsString())
                 ]
-                ];
+            ];
             \Log::error('Get Customer Error: ' . $e->getMessage());
             \Log::error($errors);
             return response()->json($errors, 500);
