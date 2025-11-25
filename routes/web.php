@@ -27,8 +27,8 @@ Route::get('/mercadopago/pending', [MercadoPagoTestController::class, 'pending']
 Route::post('/mercadopago/webhook', [MercadoPagoTestController::class, 'webhook']);
 Route::get('/mercadopago/payment/{id}', [MercadoPagoTestController::class, 'getPayment']);
 // Rutas de Customer y Cards
-Route::post('/mercadopago/create-customer', [MercadoPagoTestController::class, 'createCustomer']);
-Route::post('/mercadopago/save-card', [MercadoPagoTestController::class, 'saveCard']);
+Route::post('/mercadopago/customer/create', [MercadoPagoTestController::class, 'createCustomer']);
+Route::post('/mercadopago/card/save', [MercadoPagoTestController::class, 'saveCard']);
 Route::post('/mercadopago/process-payment', [MercadoPagoTestController::class, 'processPayment']);
 Route::get('/mercadopago/customer/{id}', [MercadoPagoTestController::class, 'getCustomer']);
 Route::get('/mercadopago/customer/{id}/cards', [MercadoPagoTestController::class, 'getCustomerCards']);

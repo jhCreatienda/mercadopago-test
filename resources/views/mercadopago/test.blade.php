@@ -388,7 +388,7 @@
                 log(`📧 Email: ${formData.email}`, 'info');
                 log(`👤 Nombre: ${formData.first_name} ${formData.last_name}`, 'info');
 
-                const response = await fetch('/mercadopago/create-customer', {
+                const response = await fetch('/mercadopago/customer/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -488,7 +488,7 @@
 
                 log(`🎫 Token obtenido: ${cardFormData.token}`, 'info');
 
-                const response = await fetch('/mercadopago/save-card', {
+                const response = await fetch('/mercadopago/card/save', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -501,7 +501,7 @@
                 });
 
                 const data = await response.json();
-
+                log(data);
                 if (data.success) {
                     savedCardId = data.card_id;
                     log(`✅ Tarjeta guardada exitosamente`, 'success');
