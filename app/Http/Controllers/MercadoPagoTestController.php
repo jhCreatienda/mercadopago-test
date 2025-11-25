@@ -8,6 +8,7 @@ use MercadoPago\Client\Customer\CustomerClient;
 use MercadoPago\Client\Customer\CustomerCardClient;
 use MercadoPago\Client\Payment\PaymentClient;
 use MercadoPago\MercadoPagoConfig;
+use MercadoPago\Net\MPSearchRequest;
 
 class MercadoPagoTestController extends Controller
 {
@@ -50,7 +51,7 @@ class MercadoPagoTestController extends Controller
 
             if ($request->phone) {
                 $customerData['phone'] = [
-                    "area_code" => "",
+                    "area_code" => "+56",
                     "number" => $request->phone
                 ];
             }
@@ -293,25 +294,55 @@ class MercadoPagoTestController extends Controller
     }
 
     /**
-     * Consultar un customer
+     * Buscar customer por email
      */
-    public function getCustomer($customerId)
+    public function searchCustomerByEmail(string $email)
     {
         try {
-            $client = new CustomerClient();
-            $customer = $client->get($customerId);
 
-            return response()->json([
-                'success' => true,
-                'customer' => [
+            $client = new CustomerClient();
+            $params = new MPSearchRequest(
+                limit: null,
+                offset: null,
+                filters: [
+                    'email' => $email
+                ]
+            );
+            // Buscar customers con ese email
+            $customers = $client->search($params);
+
+            // Convertir el resultado a array
+            $customersArray = [];
+            foreach ($customers as $customer) {
+                $customersArray[] = [
                     'id' => $customer->id,
                     'email' => $customer->email,
                     'first_name' => $customer->first_name,
-                    'last_name' => $customer->last_name
-                ]
+                    'last_name' => $customer->last_name,
+                    'date_created' => $customer->date_created
+                ];
+            }
+
+            if (empty($customersArray)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró ningún customer con ese email'
+                ], 404);
+            }
+
+            logger('Customer found by email:', [
+                'email' => $email,
+                'customer_id' => $customersArray[0]['id']
             ]);
+
+            return [
+                'success' => true,
+                'customer' => $customersArray[0],
+                'total_found' => count($customersArray)
+            ];
         } catch (\Exception $e) {
-            $errors = [
+            \Log::error('Search Customer Error: ' . $e->getMessage());
+            return response()->json([
                 'success' => false,
                 'error' => $e->getMessage(),
                 'error_detail' => [
@@ -321,10 +352,7 @@ class MercadoPagoTestController extends Controller
                     'code' => $e->getCode(),
                     'trace' => explode("\n", $e->getTraceAsString())
                 ]
-            ];
-            \Log::error('Get Customer Error: ' . $e->getMessage());
-            \Log::error($errors);
-            return response()->json($errors, 500);
+            ], 500);
         }
     }
 }
