@@ -73,8 +73,7 @@ class MercadoPagoTestController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Create Customer Error: ' . $e->getMessage());
-            return response()->json([
+            $errors = [
                 'success' => false,
                 'error' => $e->getMessage(),
                 'error_detail' => [
@@ -84,7 +83,10 @@ class MercadoPagoTestController extends Controller
                     'code' => $e->getCode(),
                     'trace' => explode("\n", $e->getTraceAsString())
                 ]
-            ], 500);
+                ];
+            \Log::error('Create Customer Error: ' . $e->getMessage());
+            \Log::error($errors);
+            return response()->json($errors, 500);
         }
     }
 
@@ -98,8 +100,9 @@ class MercadoPagoTestController extends Controller
                 'customer_id' => 'required|string',
                 'token' => 'required|string'
             ]);
-
+            logger(1);
             $client = new CustomerCardClient();
+            logger(2);
 
             $card = $client->create($request->customer_id, [
                 "token" => $request->token
@@ -121,12 +124,20 @@ class MercadoPagoTestController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Save Card Error: ' . $e->getMessage());
-            return response()->json([
+            $errors = [
                 'success' => false,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ], 500);
+                'error_detail' => [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'code' => $e->getCode(),
+                    'trace' => explode("\n", $e->getTraceAsString())
+                ]
+                ];
+            \Log::error('Save card Error: ' . $e->getMessage());
+            \Log::error($errors);
+            return response()->json($errors, 500);
         }
     }
 
@@ -171,12 +182,20 @@ class MercadoPagoTestController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Process Payment Error: ' . $e->getMessage());
-            return response()->json([
+            $errors = [
                 'success' => false,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ], 500);
+                'error_detail' => [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'code' => $e->getCode(),
+                    'trace' => explode("\n", $e->getTraceAsString())
+                ]
+                ];
+            \Log::error('proccess payment Error: ' . $e->getMessage());
+            \Log::error($errors);
+            return response()->json($errors, 500);
         }
     }
 
@@ -203,10 +222,20 @@ class MercadoPagoTestController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json([
+            $errors = [
                 'success' => false,
-                'error' => $e->getMessage()
-            ], 500);
+                'error' => $e->getMessage(),
+                'error_detail' => [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'code' => $e->getCode(),
+                    'trace' => explode("\n", $e->getTraceAsString())
+                ]
+                ];
+            \Log::error('Create Customer card Error: ' . $e->getMessage());
+            \Log::error($errors);
+            return response()->json($errors, 500);
         }
     }
 
@@ -249,8 +278,20 @@ class MercadoPagoTestController extends Controller
             return response()->json(['status' => 'ok'], 200);
 
         } catch (\Exception $e) {
-            \Log::error('Webhook Error: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            $errors = [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'error_detail' => [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'code' => $e->getCode(),
+                    'trace' => explode("\n", $e->getTraceAsString())
+                ]
+                ];
+            \Log::error('webhook Error: ' . $e->getMessage());
+            \Log::error($errors);
+            return response()->json($errors, 500);
         }
     }
 
@@ -274,10 +315,20 @@ class MercadoPagoTestController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return response()->json([
+            $errors = [
                 'success' => false,
-                'error' => $e->getMessage()
-            ], 500);
+                'error' => $e->getMessage(),
+                'error_detail' => [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'code' => $e->getCode(),
+                    'trace' => explode("\n", $e->getTraceAsString())
+                ]
+                ];
+            \Log::error('Get Customer Error: ' . $e->getMessage());
+            \Log::error($errors);
+            return response()->json($errors, 500);
         }
     }
 }
