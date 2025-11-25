@@ -334,6 +334,28 @@
             logContent.scrollTop = logContent.scrollHeight;
         }
 
+        function logError(data) {
+            log(`❌ ERROR: ${data.error}`, 'error');
+
+            if (data.error_detail) {
+                log(`📄 Archivo: ${data.error_detail.file}`, 'error');
+                log(`📍 Línea: ${data.error_detail.line}`, 'error');
+                log(`🔢 Código: ${data.error_detail.code}`, 'error');
+
+                if (data.error_detail.trace && data.error_detail.trace.length > 0) {
+                    log('📚 Stack Trace:', 'warning');
+                    data.error_detail.trace.forEach((line, index) => {
+                        if (line.trim()) {
+                            log(`  ${index + 1}. ${line.trim()}`, 'warning');
+                        }
+                    });
+                }
+            }
+
+            // Mostrar el objeto completo en consola para debugging adicional
+            console.error('Error completo:', data);
+        }
+
         function activateStep(stepNumber) {
             document.querySelectorAll('.step').forEach((step, index) => {
                 if (step.id === `step${stepNumber}` || step.classList.contains('log')) {

@@ -77,7 +77,13 @@ class MercadoPagoTestController extends Controller
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'error_detail' => [
+                    'message' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'code' => $e->getCode(),
+                    'trace' => explode("\n", $e->getTraceAsString())
+                ]
             ], 500);
         }
     }
