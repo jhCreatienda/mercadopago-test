@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,48 +13,57 @@
             margin: 0;
             padding: 0;
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
+
         .header {
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
+
         .header h1 {
             color: #333;
             margin-bottom: 10px;
         }
+
         .header p {
             color: #666;
             font-size: 14px;
         }
+
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
             margin-bottom: 30px;
         }
+
         @media (max-width: 968px) {
             .grid {
                 grid-template-columns: 1fr;
             }
         }
+
         .card {
             background: white;
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
+
         .card h2 {
             color: #333;
             margin-bottom: 20px;
@@ -61,9 +71,11 @@
             border-bottom: 2px solid #009ee3;
             padding-bottom: 10px;
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
@@ -71,6 +83,7 @@
             font-weight: 500;
             font-size: 14px;
         }
+
         .form-group input,
         .form-group select {
             width: 100%;
@@ -80,11 +93,13 @@
             font-size: 14px;
             transition: all 0.3s;
         }
+
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
             border-color: #009ee3;
         }
+
         button {
             background: #009ee3;
             color: white;
@@ -97,27 +112,32 @@
             width: 100%;
             transition: all 0.3s;
         }
+
         button:hover {
             background: #0084c2;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 158, 227, 0.3);
         }
+
         button:disabled {
             background: #ccc;
             cursor: not-allowed;
             transform: none;
         }
+
         .log {
             background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
+
         .log h2 {
             color: #333;
             margin-bottom: 15px;
             font-size: 18px;
         }
+
         .log-content {
             background: #1e1e1e;
             color: #d4d4d4;
@@ -129,28 +149,35 @@
             font-size: 13px;
             line-height: 1.6;
         }
+
         .log-content pre {
             margin: 0;
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+
         .log-entry {
             margin-bottom: 10px;
             padding: 8px;
             border-radius: 4px;
         }
+
         .log-info {
             color: #4fc3f7;
         }
+
         .log-success {
             color: #66bb6a;
         }
+
         .log-error {
             color: #ef5350;
         }
+
         .log-warning {
             color: #ffa726;
         }
+
         .status-badge {
             display: inline-block;
             padding: 6px 12px;
@@ -159,21 +186,26 @@
             font-weight: 600;
             margin-top: 10px;
         }
+
         .status-success {
             background: #e8f5e9;
             color: #2e7d32;
         }
+
         .status-pending {
             background: #fff3e0;
             color: #f57c00;
         }
+
         .status-error {
             background: #ffebee;
             color: #c62828;
         }
+
         #cardPaymentBrick_container {
             margin-top: 20px;
         }
+
         .info-box {
             background: #e3f2fd;
             padding: 15px;
@@ -181,11 +213,13 @@
             margin-bottom: 20px;
             border-left: 4px solid #2196f3;
         }
+
         .info-box p {
             color: #1565c0;
             font-size: 14px;
             margin: 0;
         }
+
         .customer-info {
             background: #f5f5f5;
             padding: 15px;
@@ -193,22 +227,27 @@
             margin-top: 15px;
             display: none;
         }
+
         .customer-info.active {
             display: block;
         }
+
         .customer-info strong {
             color: #333;
         }
+
         .step {
             opacity: 0.5;
             pointer-events: none;
         }
+
         .step.active {
             opacity: 1;
             pointer-events: all;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -317,7 +356,7 @@
     </div>
 
     <script>
-        const mp = new MercadoPago('{{ config("services.mercadopago.public_key") }}');
+        const mp = new MercadoPago('{{ config('services.mercadopago.public_key') }}');
         let customerId = null;
         let cardToken = null;
         let savedCardId = null;
@@ -476,17 +515,15 @@
             btn.disabled = true;
             btn.textContent = 'Guardando...';
 
-            log('💳 Intentando guardar tarjeta...', 'info');
+            log('💳 Intentando guardar tarjeta:' + cardToken, 'info');
 
             try {
                 // Obtener el token de la tarjeta
-                const cardFormData = await cardPaymentBrickController.getFormData();
-
-                if (!cardFormData.token) {
+                if (!cardToken) {
                     throw new Error('No se pudo obtener el token de la tarjeta');
                 }
 
-                log(`🎫 Token obtenido: ${cardFormData.token}`, 'info');
+                log(`🎫 Token obtenido: ${cardToken}`, 'info');
 
                 const response = await fetch('/mercadopago/card/save', {
                     method: 'POST',
@@ -496,7 +533,7 @@
                     },
                     body: JSON.stringify({
                         customer_id: customerId,
-                        token: cardFormData.token
+                        token: cardToken,
                     })
                 });
 
@@ -595,4 +632,5 @@
         log('🎬 Sistema iniciado. Completa el Paso 1 para comenzar.', 'info');
     </script>
 </body>
+
 </html>
